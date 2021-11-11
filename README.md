@@ -5,9 +5,13 @@ Requisitos:
 
 Python 3
 
-Instalación:
+Instalación de librerías y tkinter:
 
 pip install mysql-connector-python
+
+pip install matplotlib
+
+
 
 sudo apt-get update
 
