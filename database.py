@@ -12,6 +12,7 @@ class Database:
             print("No conectó a la base de datos")
             print(err)
             exit()#Termina la aplicación
+            
     def run_select(self, sql):#Función que corre un select
         #sql se un string con un select en lenguaje sql
         try:

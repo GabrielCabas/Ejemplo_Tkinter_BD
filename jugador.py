@@ -1,11 +1,22 @@
 import tkinter as tk
 from tkinter import ttk
 from equipo import equipo
+
 class jugador:
     def __init__(self, root, db):
         self.db = db
-        self.root = root
         self.data = []
+        
+        #Toplevel es una ventana que está un nivel arriba que la principal
+        self.root = tk.Toplevel() 
+        self.root.geometry('600x400')
+        self.root.title("Equipos")
+        self.root.resizable(width=0, height=0)
+        
+        # toplevel modal
+        self.root.transient(root)
+        
+        #
         self.__config_treeview_jugador()
         self.__config_buttons_jugador()
 
@@ -23,19 +34,25 @@ class jugador:
         self.root.after(0, self.llenar_treeview_jugador)
 
     def __config_buttons_jugador(self):
-        tk.Button(self.root, text="Insertar jugador", command = self.__insertar_jugador).place(x = 0, y = 350, width = 200, height = 50)
-        tk.Button(self.root, text="Modificar jugador", command = self.__modificar_jugador).place(x = 200, y = 350, width = 200, height = 50)
-        tk.Button(self.root, text="Eliminar jugador", command = self.__eliminar_jugador).place(x = 400, y = 350, width = 200, height = 50)
-        tk.Button(self.root, text="Ver equipos", command = self.__ver_equipos).place(x = 600, y = 350, width = 100, height = 50)
+        tk.Button(self.root, text="Insertar jugador", 
+            command = self.__insertar_jugador).place(x = 0, y = 350, width = 200, height = 50)
+        tk.Button(self.root, text="Modificar jugador", 
+            command = self.__modificar_jugador).place(x = 200, y = 350, width = 200, height = 50)
+        tk.Button(self.root, text="Eliminar jugador", 
+            command = self.__eliminar_jugador).place(x = 400, y = 350, width = 200, height = 50)
+        tk.Button(self.root, text="Ver equipos", 
+            command = self.__ver_equipos).place(x = 600, y = 350, width = 100, height = 50)
 
     def llenar_treeview_jugador(self):
         sql = """select id_jugador, nom_jugador, ape_jugador, nom_equipo 
         from jugador join equipo on jugador.id_equipo = equipo.id_equipo;"""
         data = self.db.run_select(sql)
+        
         if(data != self.data):
             self.treeview.delete(*self.treeview.get_children())#Elimina todos los rows del treeview
             for i in data:
-                self.treeview.insert("", "end", text = i[0], values = (i[1]+ " " +i[2], i[3]), iid = i[0],tags = "rojo")
+                self.treeview.insert("", "end", text = i[0], 
+                    values = (i[1]+ " " +i[2], i[3]), iid = i[0],tags = "rojo")
             self.data = data
 
     def __insertar_jugador(self):
@@ -43,7 +60,10 @@ class jugador:
 
     def __modificar_jugador(self):
         if(self.treeview.focus() != ""):
-            sql = "select id_jugador, nom_jugador, ape_jugador, equipo.nom_equipo from jugador join equipo on jugador.id_equipo = equipo.id_equipo where id_jugador = %(id_jugador)s"
+            sql = """select id_jugador, nom_jugador, ape_jugador, equipo.nom_equipo 
+            from jugador join equipo on jugador.id_equipo = equipo.id_equipo 
+            where id_jugador = %(id_jugador)s"""
+            
             row_data = self.db.run_select_filter(sql, {"id_jugador": self.treeview.focus()})[0]
             modificar_jugador(self.db, self, row_data)
 
@@ -71,7 +91,7 @@ class insertar_jugador:
         self.insert_datos.resizable(width=0, height=0)
 
     def __config_label(self):
-        tk.Label(self.insert_datos, text = "Jugador: ").place(x = 10, y = 10, width = 80, height = 20)
+        tk.Label(self.insert_datos, text = "Nombre: ").place(x = 10, y = 10, width = 80, height = 20)
         tk.Label(self.insert_datos, text = "Apellido: ").place(x = 10, y = 40, width = 80, height = 20)
         tk.Label(self.insert_datos, text = "Equipo: ").place(x = 10, y = 70, width = 80, height = 20)
 
@@ -85,7 +105,8 @@ class insertar_jugador:
         self.combo["values"], self.ids = self.__fill_combo()
 
     def __config_button(self):
-        tk.Button(self.insert_datos, text = "Aceptar", command = self.__insertar).place(x=0, y =100, width = 200, height = 20)
+        tk.Button(self.insert_datos, text = "Aceptar", 
+            command = self.__insertar).place(x=0, y =100, width = 200, height = 20)
 
     def __fill_combo(self):
         sql = "select id_equipo, nom_equipo from equipo"
@@ -93,8 +114,10 @@ class insertar_jugador:
         return [i[1] for i in self.data], [i[0] for i in self.data]
 
     def __insertar(self): #Insercion en la base de datos.
-        sql = "insert jugador (id_equipo, nom_jugador, ape_jugador) values (%(id_equipo)s, %(nom_jugador)s, %(ape_jugador)s)"
-        self.db.run_sql(sql, {"id_equipo": self.ids[self.combo.current()], "nom_jugador": self.entry_nombre.get(), "ape_jugador": self.entry_apellido.get()})
+        sql = """insert jugador (id_equipo, nom_jugador, ape_jugador) 
+            values (%(id_equipo)s, %(nom_jugador)s, %(ape_jugador)s)"""
+        self.db.run_sql(sql, {"id_equipo": self.ids[self.combo.current()], 
+            "nom_jugador": self.entry_nombre.get(), "ape_jugador": self.entry_apellido.get()})
         self.insert_datos.destroy()
         self.padre.llenar_treeview_jugador()
 
@@ -115,7 +138,7 @@ class modificar_jugador:
         self.insert_datos.resizable(width=0, height=0)
 
     def config_label(self): #Labels
-        tk.Label(self.insert_datos, text = "Jugador: ").place(x = 10, y = 10, width = 80, height = 20)
+        tk.Label(self.insert_datos, text = "Nombre: ").place(x = 10, y = 10, width = 80, height = 20)
         tk.Label(self.insert_datos, text = "Apellido: ").place(x = 10, y = 40, width = 80, height = 20)
         tk.Label(self.insert_datos, text = "Equipo: ").place(x = 10, y = 70, width = 80, height = 20)
 
@@ -132,11 +155,15 @@ class modificar_jugador:
         self.combo.insert(0, self.row_data[3])
 
     def config_button(self): #Botón aceptar, llama a la función modificar cuando es clickeado. 
-        tk.Button(self.insert_datos, text = "Aceptar", command = self.modificar).place(x=0, y =100, width = 200, height = 20)
+        tk.Button(self.insert_datos, text = "Aceptar", 
+            command = self.modificar).place(x=0, y =100, width = 200, height = 20)
 
     def modificar(self): #Insercion en la base de datos. 
-        sql = """update jugador set nom_jugador = %(nom_jugador)s, ape_jugador = %(ape_jugador)s, id_equipo = %(id_equipo)s where id_jugador = %(id_jugador)s"""
-        self.db.run_sql(sql, {"nom_jugador": self.entry_nombre.get(), "ape_jugador": self.entry_apellido.get(), "id_equipo": self.ids[self.combo.current()], "id_jugador": int(self.row_data[0])})
+        sql = """update jugador set nom_jugador = %(nom_jugador)s, ape_jugador = %(ape_jugador)s, 
+            id_equipo = %(id_equipo)s where id_jugador = %(id_jugador)s"""
+        self.db.run_sql(sql, {"nom_jugador": self.entry_nombre.get(), 
+            "ape_jugador": self.entry_apellido.get(), "id_equipo": self.ids[self.combo.current()], 
+                "id_jugador": int(self.row_data[0])})
         self.insert_datos.destroy()
         self.padre.llenar_treeview_jugador()
 
