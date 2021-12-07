@@ -11,7 +11,7 @@ pip install mysql-connector-python
 
 pip install matplotlib
 
-
+pip install PIL
 
 sudo apt-get update
 
@@ -64,3 +64,11 @@ flush privileges;
 Ejecución: 
 
 python3 app.py
+
+Actualización: En la carpeta ejemplos_graficos hay unos ejemplos de gráficos utilizando matplotlib, numpy y algunos datasets de sklearn. Pueden basarse en esos para crear los suyos dependiendo de cómo sea la información de sus bases de datos. Sean creativos ;)
+
+Instalar las siguientes librerías (para los programas en esta carpeta):
+
+pip install sklearn
+
+pip install numpy

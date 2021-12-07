@@ -1,6 +1,4 @@
 from tkinter import * 
-from matplotlib.figure import Figure
-from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
 class graficos:
