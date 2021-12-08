@@ -4,14 +4,19 @@ Ejemplo de Tkinter y CRUD para los alumnos de bases de datos.
 ## Requisitos:
 
  > Python 3
+ 
  > Mysql
+ 
  > Tkinter
 
 ## Librerías de Python 3:
 
  > mysql
+ 
  > matplotlib
+ 
  > PIL
+ 
  > tkinter
 
 ## Instalación de librerías
